@@ -33,7 +33,7 @@ namespace Nbl.Plugin.Widgets.ServiceableStoreLocations.Services
             {
                 return false;
             }
-            var existingStorePincodeLocation = GetStoreLocationByStoreId(model.StoreId);
+            var existingStorePincodeLocation = await GetStoreLocationByStoreId(model.StoreId);
             if (existingStorePincodeLocation != null)
             {
                 return false;
@@ -46,7 +46,7 @@ namespace Nbl.Plugin.Widgets.ServiceableStoreLocations.Services
                 return false;
             }
             var newVendorLocation = _mapper.Map<StorePincodeMapping>(model);
-            //newVendorLocation.CreatedAt = DateTime.Now;
+            newVendorLocation.CreatedAt = DateTime.Now;
             await _storePincodeRepository.InsertAsync(newVendorLocation);
             return true;
         }
@@ -71,10 +71,12 @@ namespace Nbl.Plugin.Widgets.ServiceableStoreLocations.Services
                 return false;
             }
 
-            var existingPincodes = existingStoreLocation.Pincode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
-            var mergedPincodes = pincodes.Union(existingPincodes).Distinct().ToArray();
+            //var existingPincodes = existingStoreLocation.Pincode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct();
+            //var mergedPincodes = pincodes.Union(existingPincodes).Distinct().ToArray();
+            var mergedPincodes = pincodes.Distinct().ToArray();
             existingStoreLocation.Pincode = string.Join(",", mergedPincodes);
-            //existingStoreLocation.UpdatedAt = DateTime.Now;
+            existingStoreLocation.Status = model.Status;
+            existingStoreLocation.UpdatedAt = DateTime.Now;
 
             await _storePincodeRepository.UpdateAsync(existingStoreLocation);
 
@@ -86,9 +88,61 @@ namespace Nbl.Plugin.Widgets.ServiceableStoreLocations.Services
 
             var data = (from vl in _storePincodeRepository.Table
                         where vl.StoreId == storeId
-                        && vl.Status
+                        && (vl.IsDeleted == null
+                        || vl.IsDeleted == false)
                         select vl).FirstOrDefault();
             return data;
         }
+        public async Task<StorePincodeMapping> GetStoreLocationById(int Id)
+        {
+
+            var data = (from vl in _storePincodeRepository.Table
+                        where vl.Id == Id
+                        && (vl.IsDeleted == null
+                        || vl.IsDeleted == false)
+                        select vl).FirstOrDefault();
+            return data;
+        }
+
+        public async Task<List<StorePincodeMappingModel>> GetAllStorePincodeMappingsAsync()
+        {
+
+            var data = await _storePincodeRepository.Table.Where(x => x.IsDeleted == null || x.IsDeleted == false).ToListAsync();
+            var response = _mapper.Map<List<StorePincodeMappingModel>>(data);
+            foreach (var mapping in response)
+            {
+                var store = await _storeService.GetStoreByIdAsync(mapping.StoreId);
+                mapping.StoreName = store?.Name??""; // Set the StoreName property
+            }
+            return response;
+        }
+        public async Task DeleteStoreLocationAsync(int id)
+        {
+            var storePincodeMapping = await _storePincodeRepository.GetByIdAsync(id);
+            if (storePincodeMapping != null)
+            {
+                storePincodeMapping.IsDeleted = true;
+                storePincodeMapping.DeletedAt = DateTime.Now;
+                await _storePincodeRepository.UpdateAsync(storePincodeMapping);
+            }
+        }
+        public async Task<List<StoreDetailsModel>> GetStoresWithPincodesAsync()
+        {
+            var stores = await _storeService.GetAllStoresAsync();
+            var storePincodes = await GetAllStorePincodeMappingsAsync();
+
+            var storePincodeDict = storePincodes.ToDictionary(sp => sp.StoreId, sp => sp.Pincode);
+
+            var combinedStores = stores.Select(store => new StoreDetailsModel
+            {
+                StoreId = store.Id,
+                StoreName = store.Name,
+                StoreUrl = store.Url, 
+                Pincode = storePincodeDict.TryGetValue(store.Id, out var pincode) ? pincode : null
+            }).ToList();
+
+            return combinedStores;
+        }
+
     }
 }

@@ -10,6 +10,7 @@ namespace Nbl.Plugin.Widgets.ServiceableStoreLocations.Models
     public record StorePincodeMappingModel : BaseNopEntityModel
     {
         public int StoreId { get; set; }
+        public string? StoreName { get; set; } = string.Empty;
         public string Pincode { get; set; }
         public bool Status { get; set; }
         public DateTime? CreatedAt { get; set; }

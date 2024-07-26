@@ -1,0 +1,29 @@
+﻿@model Nbl.Plugin.Widgets.ServiceableStoreLocations.Models.StorePincodeMappingModel
+
+@{
+    Layout = "_ConfigurePlugin";
+}
+
+<h2>Edit Store Pincode</h2>
+
+<form method="post" asp-action="EditStorePincode">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="StoreName">Store Name</label>
+        <input asp-for="StoreName" class="form-control" readonly></input>
+    </div>
+    <div class="form-group">
+        <label asp-for="StoreId">Store</label>
+        <input asp-for="StoreId" class="form-control" readonly style="display:none;"></input>
+    </div>
+    <div class="form-group">
+        <label asp-for="Pincode">Pincode</label>
+        <input asp-for="Pincode" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Status">Status</label>
+        <input type="checkbox" asp-for="Status" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="@Url.Action("Configure")" class="btn btn-secondary">Cancel</a>
+</form>

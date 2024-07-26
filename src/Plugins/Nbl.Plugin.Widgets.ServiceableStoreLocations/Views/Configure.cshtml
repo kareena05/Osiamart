@@ -1,75 +1,74 @@
-﻿@*@{
+﻿@model Nbl.Plugin.Widgets.ServiceableStoreLocations.Models.StorePincodeMappingListModel
+
+@{
     Layout = "_ConfigurePlugin";
-    NopHtml.SetActiveMenuItemSystemName("nopCommerce Lucky Wheel plugin");
-}*@
+}
 
+<h2>Manage Store Pincodes</h2>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store Plugin Information</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add New</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Store Name</th>
+            <th>StoreId</th>
+            <th>Pincodes</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.StorePincodeMappings)
+        {
+            <tr>
+                <td>@item.StoreName</td>
+                <td>@item.StoreId</td>
+                <td>@item.Pincode</td>
+                <td><input type="checkbox" disabled @(item.Status ? "checked" : "") /></td>
+                <td>
+                    <a href="@Url.Action("EditStorePincode", new { id = item.Id })" class="btn btn-secondary">Edit</a>
+                    <form method="post" asp-action="DeleteStorePincode" asp-route-id="@item.Id" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
         }
+    </tbody>
+</table>
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #f9f9f9;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        p {
-            margin-bottom: 15px;
-        }
-
-        ul {
-            list-style-type: disc;
-            padding-left: 20px;
-        }
-
-        .note {
-            font-style: italic;
-            color: #888;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Store Plugin Information</h1>
-        <p>The Store Plugin allows users to manage store locations based on pincodes and choose stores based on their location.</p>
-
-        <h2>Features:</h2>
-        <ul>
-            <li>Stores pincodes store-wise for effective location management.</li>
-            <li>Enables users to select a store based on their location or pincode.</li>
-            <li>Provides an intuitive interface for adding, updating, and managing store-pincodes mappings.</li>
-            <li>Supports integration with location-based services for enhanced user experience.</li>
-        </ul>
-
-        <h2>Usage:</h2>
-        <p>To use the plugin:</p>
-        <ol>
-            <li>Access the plugin interface from the administration panel.</li>
-            <li>Add new stores and specify the pincodes where each store operates.</li>
-            <li>Users can enter their location or pincode to find the nearest store available.</li>
-            <li>Manage store-pincodes mappings easily through the plugin's CRUD operations.</li>
-        </ol>
-
-        <p class="note">Note: This is a simplified example. Actual plugin features and usage may vary based on implementation.</p>
+<!-- Add Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Add Store Pincode</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="AddStorePincode">
+                    <div class="form-group">
+                        <label for="StoreId">Store</label>
+                        <select id="StoreId" name="StoreId" class="form-control">
+                            @foreach (var store in Model.AvailableStores)
+                            {
+                                <option value="@store.Value">@store.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="Pincode">Pincode</label>
+                        <input type="text" id="Pincode" name="Pincode" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Status">Status</label>
+                        <input type="checkbox" id="Status" name="Status" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+        </div>
     </div>
-</body>
-</html>
-
+</div>

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Nbl.Plugin.Widgets.ServiceableStoreLocations.Components;
 using Nop.Core;
 using Nop.Services.Cms;
 using Nop.Services.Localization;
 using Nop.Services.Plugins;
+using Nop.Web.Framework.Infrastructure;
 
 namespace Nbl.Plugin.Widgets.ServiceableStoreLocations
 {
@@ -37,12 +39,23 @@ namespace Nbl.Plugin.Widgets.ServiceableStoreLocations
                 //AdminWidgetZones.OrderShipmentAddButtons,
                 //PublicWidgetZones.HeaderSelectors,
                 //AdminWidgetZones.ProductDetailsBlock,
+                //PublicWidgetZones.HeaderAfter,
+                PublicWidgetZones.HeaderSelectors,
+                PublicWidgetZones.BodyEndHtmlTagBefore,
                 //PublicWidgetZones.ContentAfter
             });
         }
 
         public Type GetWidgetViewComponent(string widgetZone)
         {
+            if (widgetZone.Equals(PublicWidgetZones.HeaderSelectors))
+            {
+                return typeof(ChooseLocationPublicComponent);
+            }
+            else if (widgetZone.Equals(PublicWidgetZones.BodyEndHtmlTagBefore))
+            {
+                return typeof(LocationPopUpPublicComponent);
+            }
             return null;
             //  if (
             //    widgetZone.Equals(AdminWidgetZones.ProductListButtons)

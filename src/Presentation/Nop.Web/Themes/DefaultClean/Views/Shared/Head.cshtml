@@ -11,10 +11,11 @@
     Layout ="";
     var themeName = await themeContext.GetWorkingThemeNameAsync();
     var supportRtl = await Html.ShouldUseRtlThemeAsync();
-
+    //NopHtml.AppendCssFileParts("")
     //add main CSS file
     NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/styles{(supportRtl ? ".rtl" : "")}.css");
-    
+    NopHtml.AppendCssFileParts("https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css","",true);
+
     //add swiper css file
     if (catalogSettings.DisplayAllPicturesOnCatalogPages)
     {

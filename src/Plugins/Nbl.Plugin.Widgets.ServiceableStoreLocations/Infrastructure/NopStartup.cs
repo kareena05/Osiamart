@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -20,6 +21,7 @@ namespace Nbl.Plugin.Widgets.ServiceableStoreLocations.Infrastructure
         /// <param name="configuration">Configuration of the application</param>
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IStorePincodeService, StorePincodeService>();
 
         }

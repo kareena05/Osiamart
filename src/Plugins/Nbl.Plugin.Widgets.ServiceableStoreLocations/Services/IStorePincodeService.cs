@@ -13,5 +13,10 @@ namespace Nbl.Plugin.Widgets.ServiceableStoreLocations.Services
         Task<bool> AddVendorLocationsAsync(StorePincodeMappingModel model);
         Task<bool> UpdateStoreLocationsAsync(StorePincodeMappingModel model);
         Task<StorePincodeMapping> GetStoreLocationByStoreId(int storeId);
+        Task<StorePincodeMapping> GetStoreLocationById(int Id);
+        Task<List<StorePincodeMappingModel>> GetAllStorePincodeMappingsAsync();
+        Task DeleteStoreLocationAsync(int id);
+        Task<List<StoreDetailsModel>> GetStoresWithPincodesAsync();
+
     }
 }

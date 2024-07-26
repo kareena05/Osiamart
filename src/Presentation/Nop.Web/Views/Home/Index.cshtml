@@ -24,6 +24,7 @@
 
     //page class
     NopHtml.AppendPageCssClassParts("html-home-page");
+   //<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 }
 <div class="page home-page">
     <div class="page-body">
@@ -40,5 +41,10 @@
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBeforePoll })
         @await Component.InvokeAsync(typeof(HomepagePollsViewComponent))
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.HomepageBottom })
+
+
+        
     </div>
 </div>
+
+ 
