@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Widgets",
+  "FriendlyName": "Nbl Serviceable Store Locations",
+  "SystemName": "Widgets.ServiceableStoreLocations",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.60" ],
+  "Author": "NBL",
+  "DisplayOrder": 1,
+  "FileName": "Nbl.Plugin.Widgets.ServiceableStoreLocations.dll",
+  "Description": "Allows the different stores to be operated for different pincodes"
+}
